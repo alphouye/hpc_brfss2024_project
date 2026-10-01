@@ -1,0 +1,13 @@
+cat > .gitignore << 'EOF'
+# Environnements
+.venv/
+venv/
+__pycache__/
+*.pyc
+
+# Jupyter
+.ipynb_checkpoints/
+
+# OS
+.DS_Store
+EOF
