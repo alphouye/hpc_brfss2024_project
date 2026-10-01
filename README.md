@@ -1,86 +1,60 @@
-# Calcul haute performance — Pipeline data pour la santé
+# High-Performance Computing — Data Pipeline for Healthcare
 
-## Objectif
-
-Comparer différentes technologies data (Pandas, Dask) sur un jeu de données de santé
-publique (BRFSS 2024), à travers un benchmark d'opérations courantes, puis exploiter
-les résultats dans un dashboard interactif.
+## Objective
+Compare different data technologies (Pandas, Dask) on a public health dataset (BRFSS 2024) through a benchmark of common operations, then use the results in an interactive dashboard.
 
 ## Dataset
+BRFSS 2024: U.S. public health survey, approximately 457,670 respondents and 301 variables.
 
-BRFSS 2024: enquête de santé
-publique américaine, environ 457 670 répondants et 301 variables.
-
-
-## Structure du projet
-
-```
+## Project Structure
 .
 ├── data/
-│   └── parquet/           Jeu de données converti, à différentes tailles
+│   └── parquet/           Converted dataset, at different sizes
 ├── results/
-│   ├── profil_colonnes.csv    Profil des colonnes (types, manquants, cardinalité)
-│   ├── timings.csv             Résultats bruts du benchmark
-│   └── INTERPRETATION.md       Document de synthèse (méthodologie, résultats, analyse)
+│   ├── profil_colonnes.csv    Column profile (types, missing values, cardinality)
+│   ├── timings.csv             Raw benchmark results
+│   └── INTERPRETATION.md       Summary document (methodology, results, analysis)
 └── src/
-    ├── prepare_data.py         Conversion du fichier XPT en Parquet
-    ├── generate_sizes.py       Génération des différentes tailles de données
-    ├── operations.py           Opérations du benchmark (Pandas)
-    ├── operations_dask.py      Opérations du benchmark (Dask)
-    ├── benchmark.py            Harnais de mesure, génère results/timings.csv
-    └── app.py                  Dashboard interactif (Streamlit)
+    ├── prepare_data.py         Conversion of the XPT file to Parquet
+    ├── generate_sizes.py       Generation of the different data sizes
+    ├── check_columns.py        Script to inspect and check column profiles
+    ├── inspect_data.py         Quick data inspection and exploration script
+    ├── operations.py           Benchmark operations (Pandas)
+    ├── operations_dask.py      Benchmark operations (Dask)
+    ├── benchmark.py            Measurement harness; generates results/timings.csv
+    ├── app.py                  Interactive dashboard (Streamlit)
+    ├── test_operations.py      Unit tests for Pandas operations
+    └── test_operations_dask.py Unit tests for Dask operations
+
+## Usage
+All commands should be run from the project root.
+
+### 1. Prepare the data
+Only necessary if `data/parquet/brfss_full.parquet` does not already exist (otherwise, proceed directly to step 2 using the files already provided).
 ```
-
-## Utilisation
-
-Toutes les commandes sont à lancer depuis la racine du projet.
-
-### 1. Préparer les données
-
-Uniquement nécessaire si `data/parquet/brfss_full.parquet` n'existe pas encore
-(sinon, passer directement à l'étape 2 avec les fichiers déjà fournis).
-
-```bash
 python src/prepare_data.py
 ```
+Converts `data/raw/LLCP2024.XPT` to `data/parquet/brfss_full.parquet`. LLCP2024.XPT is too large to compress and has therefore been removed from the folder.
 
-Convertit `data/raw/LLCP2024.XPT` en `data/parquet/brfss_full.parquet`.
-LLCP2024.XPT etant trop lourd pour la compression, il a été enlevé du folder
-
-### 2. Générer les différentes tailles de données
-
-```bash
+### 2. Generate the different data sizes
+```
 python src/generate_sizes.py
 ```
+Produces the following files in `data/parquet/`: `brfss_10.parquet`, `brfss_25.parquet`, `brfss_50.parquet`, `brfss_100.parquet`, `brfss_x2.parquet`, `brfss_x3.parquet` (10%, 25%, 50%, and 100% of the dataset, followed by ×2 and ×3 duplications).
 
-Produit, dans `data/parquet/` : `brfss_10.parquet`, `brfss_25.parquet`,
-`brfss_50.parquet`, `brfss_100.parquet`, `brfss_x2.parquet`, `brfss_x3.parquet`
-(10 %, 25 %, 50 %, 100 % du dataset, puis duplications ×2 et ×3).
-
-### 3. Lancer le benchmark
-
-```bash
+### 3. Run the benchmark
+```
 python src/benchmark.py
 ```
+Runs the 5 operations (selection, filtering, groupby, new variable, descriptive statistics) with Pandas and Dask on each data size, and records the measured times in `results/timings.csv`.
 
-Exécute les 5 opérations (sélection, filtrage, groupby, nouvelle variable,
-statistiques descriptives) avec Pandas et Dask, sur chaque taille de données,
-et enregistre les temps mesurés dans `results/timings.csv`.
-
-### 4. Lancer le dashboard
-
-```bash
+### 4. Run the dashboard
+```
 streamlit run src/app.py
 ```
+Opens a web interface allowing users to choose a data size, an operation, and one or more technologies, then display the result and the measured execution time.
 
-Ouvre une interface web permettant de choisir une taille de données, une
-opération et une ou plusieurs technologies, puis d'afficher le résultat et
-le temps d'exécution mesuré.
-
-### 5. Consulter l'analyse
-
-Le notebook `notebook/explorations.ipynb` contient l'exploration initiale du
-dataset. Le document `results/INTERPRETATION.md` présente la méthodologie,
-les résultats du benchmark et les recommandations.
+### 5. Review the analysis
+The `notebook/explorations.ipynb` notebook contains the initial exploration of the dataset. The `results/INTERPRETATION.md` document presents the methodology, benchmark results, and recommendations.
 
 ## Reda LAHLOU KASSI
