@@ -7,6 +7,7 @@ Compare different data technologies (Pandas, Dask) on a public health dataset (B
 BRFSS 2024: U.S. public health survey, approximately 457,670 respondents and 301 variables.
 
 ## Project Structure
+```text
 .
 ├── data/
 │   └── parquet/           Converted dataset, at different sizes
@@ -25,6 +26,7 @@ BRFSS 2024: U.S. public health survey, approximately 457,670 respondents and 301
     ├── app.py                  Interactive dashboard (Streamlit)
     ├── test_operations.py      Unit tests for Pandas operations
     └── test_operations_dask.py Unit tests for Dask operations
+```
 
 ## Usage
 All commands should be run from the project root.
